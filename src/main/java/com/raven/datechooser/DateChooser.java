@@ -28,6 +28,55 @@ import java.util.Date;
 import java.util.List;
 
 public class DateChooser extends JComponent {
+    private final List<DateChooserListener> events = new ArrayList<>();
+    private final String allMonth_Khmer[] = {
+            "មករា",
+            "កុម្ភៈ",
+            "មីនា",
+            "មេសា",
+            "ឧសភា",
+            "មិថុនា",
+            "កក្កដា",
+            "សីហា",
+            "កញ្ញា",
+            "តុលា",
+            "វិច្ឆិកា",
+            "ធ្នូ"
+    };
+    private final String allMonth_English[] = {
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+    };
+    private RDate selectedDate;
+    private boolean closePopupAfterSelected = true;
+    private RDate[] selectedDateBetween = new RDate[2];
+    private int selectedCount = 0;
+    private Color themeColor = new Color(67, 127, 251);
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private DateSelectionMode dateSelectionMode = DateSelectionMode.SINGLE_DATE_SELECTED;
+    private JPopupMenu popup;
+    private JTextField textField;
+    private JButton labelCurrentDate;
+    private String betweenCharacter = " to ";
+    private DateChooserRender dateChooserRender = new DefaultDateChooserRender();
+    private JSpinner spMonth;
+    private JSpinner spYear;
+    private JPanel panelHeader;
+    private JPanel panelDate;
+    public DateChooser() {
+        init();
+    }
+
     public boolean isClosePopupAfterSelected() {
         return closePopupAfterSelected;
     }
@@ -35,6 +84,7 @@ public class DateChooser extends JComponent {
     public void setClosePopupAfterSelected(boolean closePopupAfterSelected) {
         this.closePopupAfterSelected = closePopupAfterSelected;
     }
+
     public Color getThemeColor() {
         return themeColor;
     }
@@ -50,6 +100,7 @@ public class DateChooser extends JComponent {
     public void setDateFormat(SimpleDateFormat dateFormat) {
         this.dateFormat = dateFormat;
     }
+    //  Public Use Method
 
     public String getBetweenCharacter() {
         return betweenCharacter;
@@ -75,27 +126,6 @@ public class DateChooser extends JComponent {
         this.dateChooserRender = dateChooserRender;
     }
 
-    private final List<DateChooserListener> events = new ArrayList<>();
-    private RDate selectedDate;
-
-    private boolean closePopupAfterSelected=true;
-    private RDate[] selectedDateBetween = new RDate[2];
-    private int selectedCount = 0;
-    private Color themeColor = new Color(67, 127, 251);
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    private DateSelectionMode dateSelectionMode = DateSelectionMode.SINGLE_DATE_SELECTED;
-    private JPopupMenu popup;
-    private JTextField textField;
-    private JButton labelCurrentDate;
-
-    private String betweenCharacter = " to ";
-    private DateChooserRender dateChooserRender = new DefaultDateChooserRender();
-
-    public DateChooser() {
-        init();
-    }
-    //  Public Use Method
-
     public void addActionDateChooserListener(DateChooserListener event) {
         events.add(event);
     }
@@ -120,10 +150,6 @@ public class DateChooser extends JComponent {
         setSelectedDate(new Date());
     }
 
-    public void setSelectedDate(Date date) {
-        setSelectedDate(new RDate(date));
-    }
-
     public void setSelectedDate(int day, int month, int year) {
         setSelectedDate(new RDate(day, month, year));
     }
@@ -144,11 +170,6 @@ public class DateChooser extends JComponent {
             boolean displayLast) {
         setSelectedDateBetween(
                 new RDate(fromDay, fromMonth, fromYear), new RDate(toDay, toMonth, toYear), displayLast);
-    }
-
-    public void setSelectedDateBetween(DateBetween dateBetween) {
-        setSelectedDateBetween(
-                new RDate(dateBetween.getFromDate()), new RDate(dateBetween.getToDate()), false);
     }
 
     public void setSelectedDateBetween(DateBetween dateBetween, boolean displayLast) {
@@ -208,13 +229,16 @@ public class DateChooser extends JComponent {
         labelCurrentDate.setVisible(show);
     }
 
+    //  End Public Use Method
+
     public void hidePopup() {
         if (popup != null) {
             popup.setVisible(false);
         }
     }
-    private void closePopup(){
-        if((popup!=null&&popup.isVisible())&&isClosePopupAfterSelected()){
+
+    private void closePopup() {
+        if ((popup != null && popup.isVisible()) && isClosePopupAfterSelected()) {
             popup.setVisible(false);
         }
     }
@@ -230,6 +254,28 @@ public class DateChooser extends JComponent {
         return selectedDate.toDate();
     }
 
+    public void setSelectedDate(Date date) {
+        setSelectedDate(new RDate(date));
+    }
+
+    private void setSelectedDate(RDate date) throws DateChooserException {
+        if (ErrorCheck.checkDate(date)) {
+            selectedDateBetween[0] = date.copy();
+            selectedDateBetween[1] = date.copy();
+            selectedCount = 2;
+            this.selectedDate = date;
+            repaint();
+            displayDate(date);
+            displayDate();
+            if (dateSelectionMode == DateSelectionMode.SINGLE_DATE_SELECTED) {
+                runEventDateChanged(new DateChooserAction(DateChooserAction.METHOD_SET));
+            } else {
+                runEventDateBetweenChanged(new DateChooserAction(DateChooserAction.METHOD_SET));
+            }
+            closePopup();
+        }
+    }
+
     public DateBetween getSelectedDateBetween() throws DateChooserException {
         if (dateSelectionMode == DateSelectionMode.SINGLE_DATE_SELECTED) {
             throw new DateChooserException("Date chooser is current SINGLE_DATE_SELECTED mode");
@@ -242,24 +288,9 @@ public class DateChooser extends JComponent {
         return dateBetween;
     }
 
-    //  End Public Use Method
-
-    private void setSelectedDate(RDate date) throws DateChooserException {
-        if (ErrorCheck.checkDate(date)) {
-            selectedDateBetween[0] = date.copy();
-            selectedDateBetween[1] = date.copy();
-            selectedCount = 2;
-            this.selectedDate = date;
-            repaint();
-            displayDate(date);
-            displayDate();
-            if(dateSelectionMode==DateSelectionMode.SINGLE_DATE_SELECTED){
-                runEventDateChanged(new DateChooserAction(DateChooserAction.METHOD_SET));
-            }else{
-                runEventDateBetweenChanged(new DateChooserAction(DateChooserAction.METHOD_SET));
-            }
-            closePopup();
-        }
+    public void setSelectedDateBetween(DateBetween dateBetween) {
+        setSelectedDateBetween(
+                new RDate(dateBetween.getFromDate()), new RDate(dateBetween.getToDate()), false);
     }
 
     private void displayDate(RDate date) {
@@ -410,7 +441,7 @@ public class DateChooser extends JComponent {
                         repaint();
                         displayDate();
                         runEventDateBetweenChanged(new DateChooserAction(DateChooserAction.USER_SELECT));
-                       closePopup();
+                        closePopup();
                     } else {
                         displayDate(new RDate());
                     }
@@ -446,7 +477,6 @@ public class DateChooser extends JComponent {
     }
 
     private void displayDate() {
-        System.out.println("Displayed ...");
         if (textField != null) {
             if (dateSelectionMode == DateSelectionMode.SINGLE_DATE_SELECTED) {
                 if (isDateSelected()) {
@@ -483,52 +513,12 @@ public class DateChooser extends JComponent {
         return allMonth_English[index];
     }
 
-    private final String allMonth_Khmer[] = {
-            "មករា",
-            "កុម្ភៈ",
-            "មីនា",
-            "មេសា",
-            "ឧសភា",
-            "មិថុនា",
-            "កក្កដា",
-            "សីហា",
-            "កញ្ញា",
-            "តុលា",
-            "វិច្ឆិកា",
-            "ធ្នូ"
-    };
-    private final String allMonth_English[] = {
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December"
-    };
-    private JSpinner spMonth;
-    private JSpinner spYear;
-    private JPanel panelHeader;
-    private JPanel panelDate;
+    public static enum DateSelectionMode {
+        SINGLE_DATE_SELECTED,
+        BETWEEN_DATE_SELECTED
+    }
 
     private class ButtonDate extends JButton {
-
-        public RDate getDate() {
-            return date;
-        }
-
-        public void setDate(RDate date) {
-            this.date = date;
-        }
-
-        public void clearHover() {
-            hover = false;
-        }
 
         private RDate date;
         private boolean hover = false;
@@ -587,6 +577,18 @@ public class DateChooser extends JComponent {
                             panelDate.repaint();
                         }
                     });
+        }
+
+        public RDate getDate() {
+            return date;
+        }
+
+        public void setDate(RDate date) {
+            this.date = date;
+        }
+
+        public void clearHover() {
+            hover = false;
         }
 
         @Override
@@ -721,10 +723,5 @@ public class DateChooser extends JComponent {
             }
             return shape;
         }
-    }
-
-    public static enum DateSelectionMode {
-        SINGLE_DATE_SELECTED,
-        BETWEEN_DATE_SELECTED
     }
 }
