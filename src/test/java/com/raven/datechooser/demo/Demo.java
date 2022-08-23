@@ -1,5 +1,6 @@
 package com.raven.datechooser.demo;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.raven.datechooser.DateBetween;
 import com.raven.datechooser.DateChooser;
@@ -22,7 +23,7 @@ public class Demo extends JFrame {
 
     private void init() {
         getContentPane().setLayout(new BorderLayout());
-        JPanel panel = new JPanel(new MigLayout("fill", "", "top"));
+        JPanel panel = new JPanel(new MigLayout("fill, inset 50", "", "top"));
         getContentPane().add(panel);
         DateChooser ch = new DateChooser();
         ch.addActionDateChooserListener(
@@ -57,8 +58,9 @@ public class Demo extends JFrame {
     }
 
     public static void main(String[] args) {
-        FlatIntelliJLaf.registerCustomDefaultsSource("com.raven.datechooser.demo");
-        FlatIntelliJLaf.setup();
+       FlatDarculaLaf.registerCustomDefaultsSource("com.raven.datechooser.demo");
+        FlatDarculaLaf.setup();
+
         java.awt.EventQueue.invokeLater(
                 new Runnable() {
                     @Override
