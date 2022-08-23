@@ -35,7 +35,7 @@ public class Demo extends JFrame {
 
                     @Override
                     public void dateBetweenChanged(DateBetween date, DateChooserAction action) {
-                        System.out.println("date between selected...");
+                        System.out.println(date);
                     }
                 });
         JTextField txt = new JTextField();

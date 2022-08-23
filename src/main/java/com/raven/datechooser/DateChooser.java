@@ -319,13 +319,13 @@ public class DateChooser extends JComponent {
 
     private synchronized void runEventDateChanged(DateChooserAction action) {
         for (DateChooserListener event : events) {
-            event.dateChanged(null, action);
+            event.dateChanged(getSelectedDate(), action);
         }
     }
 
     private synchronized void runEventDateBetweenChanged(DateChooserAction action) {
         for (DateChooserListener event : events) {
-            event.dateBetweenChanged(null, action);
+            event.dateBetweenChanged(getSelectedDateBetween(), action);
         }
     }
 
@@ -546,7 +546,6 @@ public class DateChooser extends JComponent {
                             hover = false;
                             if (dateSelectionMode == DateSelectionMode.BETWEEN_DATE_SELECTED) {
                             }
-
                             panelDate.repaint();
                         }
                     });
