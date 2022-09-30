@@ -57,6 +57,8 @@ public class DateChooser extends JComponent {
             "November",
             "December"
     };
+
+    private  DateSelectable dateSelectable;
     private RDate selectedDate;
     private boolean closePopupAfterSelected = true;
     private RDate[] selectedDateBetween = new RDate[2];
@@ -84,7 +86,15 @@ public class DateChooser extends JComponent {
     public void setClosePopupAfterSelected(boolean closePopupAfterSelected) {
         this.closePopupAfterSelected = closePopupAfterSelected;
     }
-
+    public void setDateSelectable(DateSelectable dateSelectable) {
+        this.dateSelectable = dateSelectable;
+        for(Component com:panelDate.getComponents()){
+            if(com instanceof ButtonDate){
+                ButtonDate cmdDate=(ButtonDate) com;
+                cmdDate.setEnabled(isDateSelectable(cmdDate.getDate().toDate()));
+            }
+        }
+    }
     public Color getThemeColor() {
         return themeColor;
     }
@@ -100,7 +110,6 @@ public class DateChooser extends JComponent {
     public void setDateFormat(SimpleDateFormat dateFormat) {
         this.dateFormat = dateFormat;
     }
-    //  Public Use Method
 
     public String getBetweenCharacter() {
         return betweenCharacter;
@@ -229,8 +238,6 @@ public class DateChooser extends JComponent {
         labelCurrentDate.setVisible(show);
     }
 
-    //  End Public Use Method
-
     public void hidePopup() {
         if (popup != null) {
             popup.setVisible(false);
@@ -296,6 +303,10 @@ public class DateChooser extends JComponent {
     private void displayDate(RDate date) {
         spMonth.setValue(indexToMonth(date.getMonth() - 1));
         spYear.setValue(date.getYear());
+    }
+
+    private boolean isDateSelectable(Date date){
+        return dateSelectable==null||dateSelectable.isDateSelectable(date);
     }
 
     private void setSelectedDateBetween(RDate fromDate, RDate toDate, boolean displayLast) {
@@ -525,6 +536,7 @@ public class DateChooser extends JComponent {
         private boolean selected = false;
 
         public ButtonDate(RDate date) {
+            setEnabled(isDateSelectable(date.toDate()));
             this.date = date;
             setMargin(new Insets(0, 0, 0, 0));
             setContentAreaFilled(false);
@@ -532,52 +544,57 @@ public class DateChooser extends JComponent {
                     new MouseAdapter() {
                         @Override
                         public void mouseEntered(MouseEvent e) {
-                            hover = true;
-                            if (dateSelectionMode == DateSelectionMode.BETWEEN_DATE_SELECTED) {
-                                if (selectedCount == 1) {
-                                    selectedDateBetween[1] = date;
-                                }
-                            }
-                            panelDate.repaint();
+                         if(isEnabled()){
+                             hover = true;
+                             if (dateSelectionMode == DateSelectionMode.BETWEEN_DATE_SELECTED) {
+                                 if (selectedCount == 1) {
+                                     selectedDateBetween[1] = date;
+                                 }
+                             }
+                             panelDate.repaint();
+                         }
                         }
 
                         @Override
                         public void mouseExited(MouseEvent e) {
-                            hover = false;
-                            if (dateSelectionMode == DateSelectionMode.BETWEEN_DATE_SELECTED) {
-                            }
-                            panelDate.repaint();
+                         if(isEnabled()){
+                             hover = false;
+                             if (dateSelectionMode == DateSelectionMode.BETWEEN_DATE_SELECTED) {
+                             }
+                             panelDate.repaint();
+                         }
                         }
                     });
             addActionListener(
                     (ActionEvent e) -> {
-                        if (dateSelectionMode == DateSelectionMode.SINGLE_DATE_SELECTED) {
-                            selectedDate = date;
-                            panelDate.repaint();
-                            displayDate();
-                            runEventDateChanged(new DateChooserAction(DateChooserAction.USER_SELECT));
-                            closePopup();
-                        } else {
-                            if (selectedCount >= 2) {
-                                selectedCount = 0;
-                                selectedDateBetween[1] = null;
-                            }
-                            if (selectedCount == 0) {
-                                selectedDateBetween[0] = date;
-                                selectedCount++;
+                        if(isEnabled()){
+                            if (dateSelectionMode == DateSelectionMode.SINGLE_DATE_SELECTED) {
+                                selectedDate = date;
+                                panelDate.repaint();
                                 displayDate();
-                            } else if (selectedCount == 1) {
-                                selectedDateBetween[1] = date;
-                                selectedCount++;
-                                displayDate();
-                                runEventDateBetweenChanged(new DateChooserAction(DateChooserAction.USER_SELECT));
+                                runEventDateChanged(new DateChooserAction(DateChooserAction.USER_SELECT));
                                 closePopup();
+                            } else {
+                                if (selectedCount >= 2) {
+                                    selectedCount = 0;
+                                    selectedDateBetween[1] = null;
+                                }
+                                if (selectedCount == 0) {
+                                    selectedDateBetween[0] = date;
+                                    selectedCount++;
+                                    displayDate();
+                                } else if (selectedCount == 1) {
+                                    selectedDateBetween[1] = date;
+                                    selectedCount++;
+                                    displayDate();
+                                    runEventDateBetweenChanged(new DateChooserAction(DateChooserAction.USER_SELECT));
+                                    closePopup();
+                                }
+                                panelDate.repaint();
                             }
-                            panelDate.repaint();
                         }
                     });
         }
-
         public RDate getDate() {
             return date;
         }
