@@ -58,7 +58,7 @@ public class DateChooser extends JComponent {
             "December"
     };
 
-    private  DateSelectable dateSelectable;
+    private DateSelectable dateSelectable;
     private RDate selectedDate;
     private boolean closePopupAfterSelected = true;
     private RDate[] selectedDateBetween = new RDate[2];
@@ -75,6 +75,9 @@ public class DateChooser extends JComponent {
     private JSpinner spYear;
     private JPanel panelHeader;
     private JPanel panelDate;
+
+    private boolean lightWeightPopupEnabled = true;
+
     public DateChooser() {
         init();
     }
@@ -86,15 +89,28 @@ public class DateChooser extends JComponent {
     public void setClosePopupAfterSelected(boolean closePopupAfterSelected) {
         this.closePopupAfterSelected = closePopupAfterSelected;
     }
+
+    public boolean isLightWeightPopupEnabled() {
+        return lightWeightPopupEnabled;
+    }
+
+    public void setLightWeightPopupEnabled(boolean lightWeightPopupEnabled) {
+        this.lightWeightPopupEnabled = lightWeightPopupEnabled;
+        if (popup != null) {
+            popup.setLightWeightPopupEnabled(lightWeightPopupEnabled);
+        }
+    }
+
     public void setDateSelectable(DateSelectable dateSelectable) {
         this.dateSelectable = dateSelectable;
-        for(Component com:panelDate.getComponents()){
-            if(com instanceof ButtonDate){
-                ButtonDate cmdDate=(ButtonDate) com;
+        for (Component com : panelDate.getComponents()) {
+            if (com instanceof ButtonDate) {
+                ButtonDate cmdDate = (ButtonDate) com;
                 cmdDate.setEnabled(isDateSelectable(cmdDate.getDate().toDate()));
             }
         }
     }
+
     public Color getThemeColor() {
         return themeColor;
     }
@@ -211,6 +227,7 @@ public class DateChooser extends JComponent {
     public void showPopup() {
         if (popup == null) {
             popup = new JPopupMenu();
+            popup.setLightWeightPopupEnabled(lightWeightPopupEnabled);
             popup.add(this);
             popup.addPopupMenuListener(new PopupMenuListener() {
                 @Override
@@ -305,8 +322,8 @@ public class DateChooser extends JComponent {
         spYear.setValue(date.getYear());
     }
 
-    private boolean isDateSelectable(Date date){
-        return dateSelectable==null||dateSelectable.isDateSelectable(date);
+    private boolean isDateSelectable(Date date) {
+        return dateSelectable == null || dateSelectable.isDateSelectable(date);
     }
 
     private void setSelectedDateBetween(RDate fromDate, RDate toDate, boolean displayLast) {
@@ -544,30 +561,30 @@ public class DateChooser extends JComponent {
                     new MouseAdapter() {
                         @Override
                         public void mouseEntered(MouseEvent e) {
-                         if(isEnabled()){
-                             hover = true;
-                             if (dateSelectionMode == DateSelectionMode.BETWEEN_DATE_SELECTED) {
-                                 if (selectedCount == 1) {
-                                     selectedDateBetween[1] = date;
-                                 }
-                             }
-                             panelDate.repaint();
-                         }
+                            if (isEnabled()) {
+                                hover = true;
+                                if (dateSelectionMode == DateSelectionMode.BETWEEN_DATE_SELECTED) {
+                                    if (selectedCount == 1) {
+                                        selectedDateBetween[1] = date;
+                                    }
+                                }
+                                panelDate.repaint();
+                            }
                         }
 
                         @Override
                         public void mouseExited(MouseEvent e) {
-                         if(isEnabled()){
-                             hover = false;
-                             if (dateSelectionMode == DateSelectionMode.BETWEEN_DATE_SELECTED) {
-                             }
-                             panelDate.repaint();
-                         }
+                            if (isEnabled()) {
+                                hover = false;
+                                if (dateSelectionMode == DateSelectionMode.BETWEEN_DATE_SELECTED) {
+                                }
+                                panelDate.repaint();
+                            }
                         }
                     });
             addActionListener(
                     (ActionEvent e) -> {
-                        if(isEnabled()){
+                        if (isEnabled()) {
                             if (dateSelectionMode == DateSelectionMode.SINGLE_DATE_SELECTED) {
                                 selectedDate = date;
                                 panelDate.repaint();
@@ -595,6 +612,7 @@ public class DateChooser extends JComponent {
                         }
                     });
         }
+
         public RDate getDate() {
             return date;
         }
