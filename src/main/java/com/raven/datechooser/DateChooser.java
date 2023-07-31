@@ -1,11 +1,14 @@
 package com.raven.datechooser;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.util.UIScale;
+import com.raven.datechooser.layout.CellLayout;
+import com.raven.datechooser.layout.HeaderLayout;
 import com.raven.datechooser.listener.DateChooserAction;
 import com.raven.datechooser.listener.DateChooserListener;
 import com.raven.datechooser.render.DateChooserRender;
 import com.raven.datechooser.render.DefaultDateChooserRender;
-import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -27,7 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class DateChooser extends JComponent {
+public class DateChooser extends JPanel {
     private final List<DateChooserListener> events = new ArrayList<>();
     private final String allMonth_Khmer[] = {
             "មករា",
@@ -74,6 +77,7 @@ public class DateChooser extends JComponent {
     private JSpinner spMonth;
     private JSpinner spYear;
     private JPanel panelHeader;
+    private JPanel panelTitle;
     private JPanel panelDate;
 
     private boolean lightWeightPopupEnabled = true;
@@ -358,7 +362,10 @@ public class DateChooser extends JComponent {
     }
 
     private void init() {
-        setLayout(new MigLayout("wrap 0, gap 0, fill, hidemode 1", "[fill, 250]", "[fill, grow 0][fill]3"));
+        putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:if($DateChooser.background,$DateChooser.background,$Panel.background);" +
+                "border:5,5,5,5");
+        setLayout(new DateChooserLayout());
         Color focusColor = UIManager.getColor("Component.focusColor");
         if (focusColor != null) {
             themeColor = focusColor;
@@ -378,12 +385,9 @@ public class DateChooser extends JComponent {
     }
 
     private void createHeader() {
-        panelHeader = new JPanel(new MigLayout("wrap 0, inset 0, fill", "[fill]", "[fill]"));
-        panelHeader.setOpaque(false);
-        JPanel panelOption =
-                new JPanel(
-                        new MigLayout("fill, inset 0", "[grow 0][fill,45%][fill,30%][grow 0]", "[fill]"));
-        panelOption.setOpaque(false);
+        panelHeader = new JPanel(new HeaderLayout());
+        panelHeader.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:if($DateChooser.background,$DateChooser.background,$Panel.background)");
         JButton cmdBack = new JButton(new FlatSVGIcon("com/raven/datechooser/icon/arrowCollapse.svg"));
         JButton cmdNext = new JButton(new FlatSVGIcon("com/raven/datechooser/icon/arrowExpand.svg"));
         spMonth = new JSpinner();
@@ -424,28 +428,29 @@ public class DateChooser extends JComponent {
         doc.setDocumentFilter(new DateChooserEditorDocumentFilter());
         numberEditor.getTextField().setDocument(doc);
         spMonth.setModel(new SpinnerListModel(allMonth_English));
-        panelOption.add(cmdBack, "h 30");
-        panelOption.add(spMonth);
-        panelOption.add(spYear);
-        panelOption.add(cmdNext);
-        panelHeader.add(panelOption);
-        JPanel panelTitle = new JPanel(new MigLayout("fill, inset 0 0 2 0, gap 0", "[center, 100%]"));
-        panelTitle.setOpaque(false);
-        panelTitle.add(new JLabel("Sun"));
-        panelTitle.add(new JLabel("Mon"));
-        panelTitle.add(new JLabel("Tue"));
-        panelTitle.add(new JLabel("Wed"));
-        panelTitle.add(new JLabel("Thu"));
-        panelTitle.add(new JLabel("Fri"));
-        panelTitle.add(new JLabel("Sat"));
-        panelHeader.add(panelTitle);
+        panelHeader.add(cmdBack);
+        panelHeader.add(spMonth);
+        panelHeader.add(spYear);
+        panelHeader.add(cmdNext);
+        panelTitle = new JPanel(new CellLayout());
+        panelTitle.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:if($DateChooser.background,$DateChooser.background,$Panel.background)");
+        panelTitle.add(new JLabel("Sun", JLabel.CENTER));
+        panelTitle.add(new JLabel("Mon", JLabel.CENTER));
+        panelTitle.add(new JLabel("Tue", JLabel.CENTER));
+        panelTitle.add(new JLabel("Wed", JLabel.CENTER));
+        panelTitle.add(new JLabel("Thu", JLabel.CENTER));
+        panelTitle.add(new JLabel("Fri", JLabel.CENTER));
+        panelTitle.add(new JLabel("Sat", JLabel.CENTER));
+
         add(panelHeader);
+        add(panelTitle);
     }
 
     private void createDate() {
-        panelDate =
-                new JPanel(new MigLayout("wrap 7, fill, inset 0, gap 0", "[fill,10%]", "[fill,10%]"));
-        panelDate.setOpaque(false);
+        panelDate = new JPanel(new CellLayout());
+        panelDate.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:if($DateChooser.background,$DateChooser.background,$Panel.background)");
         add(panelDate);
     }
 
@@ -479,7 +484,7 @@ public class DateChooser extends JComponent {
             }
 
         });
-        add(labelCurrentDate, "center,grow 0");
+        add(labelCurrentDate);
     }
 
     private void showDate() {
@@ -756,6 +761,58 @@ public class DateChooser extends JComponent {
                 }
             }
             return shape;
+        }
+    }
+
+    private class DateChooserLayout implements LayoutManager {
+
+        @Override
+        public void addLayoutComponent(String name, Component comp) {
+        }
+
+        @Override
+        public void removeLayoutComponent(Component comp) {
+        }
+
+        @Override
+        public Dimension preferredLayoutSize(Container parent) {
+            synchronized (parent.getTreeLock()) {
+                Insets insets = parent.getInsets();
+                int width = insets.left + insets.right + panelHeader.getPreferredSize().width;
+                int height = insets.top + insets.bottom + (panelHeader.getPreferredSize().height + UIScale.scale(2) + panelTitle.getPreferredSize().height + panelDate.getPreferredSize().height);
+                if (labelCurrentDate.isVisible()) {
+                    height += labelCurrentDate.getPreferredSize().height + UIScale.scale(3);
+                }
+                return new Dimension(width, height);
+            }
+        }
+
+        @Override
+        public Dimension minimumLayoutSize(Container parent) {
+            synchronized (parent.getTreeLock()) {
+                return new Dimension(0, 0);
+            }
+        }
+
+        @Override
+        public void layoutContainer(Container parent) {
+            synchronized (parent.getTreeLock()) {
+                Insets insets = parent.getInsets();
+                int x = insets.left;
+                int y = insets.right;
+                int width = parent.getWidth() - (insets.left + insets.right);
+                panelHeader.setBounds(x, y, width, panelHeader.getPreferredSize().height);
+                y += panelHeader.getPreferredSize().height + UIScale.scale(1);
+                panelTitle.setBounds(x, y, width, panelTitle.getPreferredSize().height);
+                y += panelHeader.getPreferredSize().height + UIScale.scale(1);
+                panelDate.setBounds(x, y, width, panelDate.getPreferredSize().height);
+                if (labelCurrentDate.isVisible()) {
+                    y += panelDate.getPreferredSize().height + UIScale.scale(3);
+                    int lbw = labelCurrentDate.getPreferredSize().width;
+                    int lx = (width - lbw) / 2;
+                    labelCurrentDate.setBounds(lx, y, lbw, labelCurrentDate.getPreferredSize().height);
+                }
+            }
         }
     }
 }
