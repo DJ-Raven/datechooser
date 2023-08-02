@@ -435,6 +435,16 @@ public class DateChooser extends JPanel {
         panelTitle = new JPanel(new CellLayout());
         panelTitle.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:if($DateChooser.background,$DateChooser.background,$Panel.background)");
+        spMonth.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:if($DateChooser.background,$DateChooser.background,$Panel.background);" +
+                "buttonBackground:if($DateChooser.background,$DateChooser.background,$Panel.background)");
+        spYear.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:if($DateChooser.background,$DateChooser.background,$Panel.background);" +
+                "buttonBackground:if($DateChooser.background,$DateChooser.background,$Panel.background)");
+        cmdBack.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:if($DateChooser.background,$DateChooser.background,$Panel.background)");
+        cmdNext.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:if($DateChooser.background,$DateChooser.background,$Panel.background)");
         panelTitle.add(new JLabel("Sun", JLabel.CENTER));
         panelTitle.add(new JLabel("Mon", JLabel.CENTER));
         panelTitle.add(new JLabel("Tue", JLabel.CENTER));
@@ -501,7 +511,8 @@ public class DateChooser extends JPanel {
             ButtonDate cmd = new ButtonDate(new RDate(calendar));
             cmd.setText(calendar.get(Calendar.DATE) + "");
             if (calendar.get(Calendar.MONTH) != month) {
-                cmd.setForeground(new Color(170, 170, 170));
+                cmd.putClientProperty(FlatClientProperties.STYLE, "" +
+                        "foreground:$Button.disabledText");
             }
             panelDate.add(cmd);
             calendar.add(Calendar.DATE, 1);
@@ -551,7 +562,7 @@ public class DateChooser extends JPanel {
         BETWEEN_DATE_SELECTED
     }
 
-    private class ButtonDate extends JButton {
+    public class ButtonDate extends JButton {
 
         private RDate date;
         private boolean hover = false;

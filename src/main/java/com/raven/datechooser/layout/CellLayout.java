@@ -51,7 +51,7 @@ public class CellLayout implements LayoutManager {
                 com.setBounds(x, y, w, h);
                 if ((i + 1) % 7 == 0) {
                     y += h;
-                    x = insets.left;
+                    x = insets.left+space;
                 } else {
                     x += w;
                 }
