@@ -50,7 +50,7 @@ public class Demo extends JFrame {
         panel.add(txt);
         JButton cmd = new JButton("Selected Date");
         ch.setDateSelectionMode(DateChooser.DateSelectionMode.BETWEEN_DATE_SELECTED);
-        ch.toDay();
+       // ch.toDay();
         cmd.addActionListener(
                 e -> {
                     // SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");

@@ -173,6 +173,7 @@ public class DateChooser extends JPanel {
                         }
                     }
                 });
+        displayDate();
     }
 
     public void toDay() {
@@ -231,6 +232,8 @@ public class DateChooser extends JPanel {
     public void showPopup() {
         if (popup == null) {
             popup = new JPopupMenu();
+            popup.putClientProperty(FlatClientProperties.STYLE, "" +
+                    "borderInsets:1,1,1,1");
             popup.setLightWeightPopupEnabled(lightWeightPopupEnabled);
             popup.add(this);
             popup.addPopupMenuListener(new PopupMenuListener() {
@@ -377,6 +380,7 @@ public class DateChooser extends JPanel {
         spMonth.setValue(indexToMonth(now.getMonth() - 1));
         initEvent();
         spYear.setValue(now.getYear());
+        toDay();
     }
 
     private void initEvent() {
