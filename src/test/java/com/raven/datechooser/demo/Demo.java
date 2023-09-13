@@ -1,8 +1,9 @@
 package com.raven.datechooser.demo;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.raven.datechooser.DateBetween;
 import com.raven.datechooser.DateChooser;
 import com.raven.datechooser.DateSelectable;
@@ -61,11 +62,30 @@ public class Demo extends JFrame {
                     ch.setSelectedDateBetween(3, 3, 2022, 5, 7, 2022, true);
                 });
         panel.add(cmd);
+        JButton cmdMode=new JButton("Change theme");
+        cmdMode.addActionListener(e -> {
+            if (!FlatLaf.isLafDark()) {
+                EventQueue.invokeLater(() -> {
+                    FlatAnimatedLafChange.showSnapshot();
+                    FlatMacDarkLaf.setup();
+                    FlatLaf.updateUI();
+                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                });
+            } else {
+                EventQueue.invokeLater(() -> {
+                    FlatAnimatedLafChange.showSnapshot();
+                    FlatMacLightLaf.setup();
+                    FlatLaf.updateUI();
+                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                });
+            }
+        });
+        panel.add(cmdMode);
     }
 
     public static void main(String[] args) {
         FlatLaf.registerCustomDefaultsSource("com.raven.datechooser.demo");
-        FlatDarculaLaf.setup();
+        FlatMacDarkLaf.setup();
         java.awt.EventQueue.invokeLater(
                 new Runnable() {
                     @Override

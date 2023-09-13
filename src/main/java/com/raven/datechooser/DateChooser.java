@@ -255,6 +255,7 @@ public class DateChooser extends JPanel {
                 }
             });
         }
+        SwingUtilities.updateComponentTreeUI(popup);
         popup.show(textField, 0, textField.getHeight());
     }
 
