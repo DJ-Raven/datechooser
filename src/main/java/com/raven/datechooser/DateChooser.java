@@ -147,6 +147,7 @@ public class DateChooser extends JPanel {
 
     public void setDateChooserRender(DateChooserRender dateChooserRender) {
         this.dateChooserRender = dateChooserRender;
+        showDate();
     }
 
     public void addActionDateChooserListener(DateChooserListener event) {

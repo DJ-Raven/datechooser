@@ -23,6 +23,7 @@ public class Demo extends JFrame {
         init();
     }
 
+
     private void init() {
         getContentPane().setLayout(new BorderLayout());
         JPanel panel = new JPanel(new FlowLayout());
@@ -85,10 +86,10 @@ public class Demo extends JFrame {
 
     public static void main(String[] args) {
         FlatLaf.registerCustomDefaultsSource("com.raven.datechooser.demo");
-       // String listMonth[] = {"មករា", "កុម្ភៈ", "មីនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"};
-       // String listDays[] = {"អាទិត្យ","ច័ន្ទ","អង្គារ","ពុធ","ព្រហ","សុក្រ","សៅរ៍"};
-       // UIManager.put("DateChooser.listMonth", listMonth);
-       // UIManager.put("DateChooser.listDay", listDays);
+        String listMonth[] = {"មករា", "កុម្ភៈ", "មីនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"};
+        String listDays[] = {"អាទិត្យ", "ច័ន្ទ", "អង្គារ", "ពុធ", "ព្រហ", "សុក្រ", "សៅរ៍"};
+        UIManager.put("DateChooser.listMonth", listMonth);
+        UIManager.put("DateChooser.listDay", listDays);
         FlatMacDarkLaf.setup();
         java.awt.EventQueue.invokeLater(
                 new Runnable() {
