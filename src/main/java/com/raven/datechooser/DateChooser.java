@@ -32,34 +32,6 @@ import java.util.List;
 
 public class DateChooser extends JPanel {
     private final List<DateChooserListener> events = new ArrayList<>();
-    private final String allMonth_Khmer[] = {
-            "មករា",
-            "កុម្ភៈ",
-            "មីនា",
-            "មេសា",
-            "ឧសភា",
-            "មិថុនា",
-            "កក្កដា",
-            "សីហា",
-            "កញ្ញា",
-            "តុលា",
-            "វិច្ឆិកា",
-            "ធ្នូ"
-    };
-    private final String allMonth_English[] = {
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December"
-    };
 
     private DateSelectable dateSelectable;
     private RDate selectedDate;
@@ -80,11 +52,33 @@ public class DateChooser extends JPanel {
     private JPanel panelTitle;
     private JPanel panelDate;
 
+    private String[] months = getListMonth();
+    private String[] days = getListDay();
+
     private boolean lightWeightPopupEnabled = true;
 
     public DateChooser() {
         init();
     }
+
+    private String[] getListMonth() {
+        String months[] = (String[]) UIManager.get("DateChooser.listMonth");
+        if (months == null) {
+            return new String[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        } else {
+            return months;
+        }
+    }
+
+    private String[] getListDay() {
+        String days[] = (String[]) UIManager.get("DateChooser.listDay");
+        if (days == null) {
+            return new String[]{"Sun", "Mon", "Tue", "Wed", "Thu", "Fir", "Sat"};
+        } else {
+            return days;
+        }
+    }
+
 
     public boolean isClosePopupAfterSelected() {
         return closePopupAfterSelected;
@@ -432,7 +426,7 @@ public class DateChooser extends JPanel {
                 });
         doc.setDocumentFilter(new DateChooserEditorDocumentFilter());
         numberEditor.getTextField().setDocument(doc);
-        spMonth.setModel(new SpinnerListModel(allMonth_English));
+        spMonth.setModel(new SpinnerListModel(months));
         panelHeader.add(cmdBack);
         panelHeader.add(spMonth);
         panelHeader.add(spYear);
@@ -450,13 +444,13 @@ public class DateChooser extends JPanel {
                 "background:if($DateChooser.background,$DateChooser.background,$Panel.background)");
         cmdNext.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:if($DateChooser.background,$DateChooser.background,$Panel.background)");
-        panelTitle.add(new JLabel("Sun", JLabel.CENTER));
-        panelTitle.add(new JLabel("Mon", JLabel.CENTER));
-        panelTitle.add(new JLabel("Tue", JLabel.CENTER));
-        panelTitle.add(new JLabel("Wed", JLabel.CENTER));
-        panelTitle.add(new JLabel("Thu", JLabel.CENTER));
-        panelTitle.add(new JLabel("Fri", JLabel.CENTER));
-        panelTitle.add(new JLabel("Sat", JLabel.CENTER));
+        panelTitle.add(new JLabel(days[0], JLabel.CENTER));
+        panelTitle.add(new JLabel(days[1], JLabel.CENTER));
+        panelTitle.add(new JLabel(days[2], JLabel.CENTER));
+        panelTitle.add(new JLabel(days[3], JLabel.CENTER));
+        panelTitle.add(new JLabel(days[4], JLabel.CENTER));
+        panelTitle.add(new JLabel(days[5], JLabel.CENTER));
+        panelTitle.add(new JLabel(days[6], JLabel.CENTER));
 
         add(panelHeader);
         add(panelTitle);
@@ -514,7 +508,7 @@ public class DateChooser extends JPanel {
         calendar.add(Calendar.DATE, -startDay);
         for (int i = 1; i <= 7 * 6; i++) {
             ButtonDate cmd = new ButtonDate(new RDate(calendar));
-            cmd.setText(calendar.get(Calendar.DATE) + "");
+            cmd.setText(dateChooserRender.renderDateCell(this, calendar.getTime()));
             if (calendar.get(Calendar.MONTH) != month) {
                 cmd.putClientProperty(FlatClientProperties.STYLE, "" +
                         "foreground:$Button.disabledText");
@@ -550,8 +544,8 @@ public class DateChooser extends JPanel {
     }
 
     private int monthToIndex(String val) {
-        for (int i = 0; i < allMonth_English.length; i++) {
-            if (val.equals(allMonth_English[i])) {
+        for (int i = 0; i < months.length; i++) {
+            if (val.equals(months[i])) {
                 return i;
             }
         }
@@ -559,7 +553,7 @@ public class DateChooser extends JPanel {
     }
 
     private String indexToMonth(int index) {
-        return allMonth_English[index];
+        return months[index];
     }
 
     public static enum DateSelectionMode {

@@ -11,4 +11,6 @@ public interface DateChooserRender {
     public String renderTextFieldDate(DateChooser dateChooser, Date date);
 
     public String renderTextFieldDateBetween(DateChooser dateChooser, DateBetween dateBetween);
+
+    public String renderDateCell(DateChooser dateChooser, Date date);
 }

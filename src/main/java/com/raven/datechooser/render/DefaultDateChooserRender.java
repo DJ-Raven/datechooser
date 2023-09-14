@@ -3,6 +3,8 @@ package com.raven.datechooser.render;
 import com.raven.datechooser.DateBetween;
 import com.raven.datechooser.DateChooser;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DefaultDateChooserRender implements DateChooserRender {
@@ -28,5 +30,11 @@ public class DefaultDateChooserRender implements DateChooserRender {
         } else {
             return dateChooser.getDateFormat().format(dateBetween.getFromDate());
         }
+    }
+
+    @Override
+    public String renderDateCell(DateChooser dateChooser, Date date) {
+        DateFormat df = new SimpleDateFormat("d");
+        return df.format(date);
     }
 }

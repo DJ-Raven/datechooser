@@ -51,7 +51,7 @@ public class Demo extends JFrame {
         panel.add(txt);
         JButton cmd = new JButton("Selected Date");
         ch.setDateSelectionMode(DateChooser.DateSelectionMode.BETWEEN_DATE_SELECTED);
-       // ch.toDay();
+        // ch.toDay();
         cmd.addActionListener(
                 e -> {
                     // SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -62,7 +62,7 @@ public class Demo extends JFrame {
                     ch.setSelectedDateBetween(3, 3, 2022, 5, 7, 2022, true);
                 });
         panel.add(cmd);
-        JButton cmdMode=new JButton("Change theme");
+        JButton cmdMode = new JButton("Change theme");
         cmdMode.addActionListener(e -> {
             if (!FlatLaf.isLafDark()) {
                 EventQueue.invokeLater(() -> {
@@ -85,6 +85,10 @@ public class Demo extends JFrame {
 
     public static void main(String[] args) {
         FlatLaf.registerCustomDefaultsSource("com.raven.datechooser.demo");
+       // String listMonth[] = {"មករា", "កុម្ភៈ", "មីនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"};
+       // String listDays[] = {"អាទិត្យ","ច័ន្ទ","អង្គារ","ពុធ","ព្រហ","សុក្រ","សៅរ៍"};
+       // UIManager.put("DateChooser.listMonth", listMonth);
+       // UIManager.put("DateChooser.listDay", listDays);
         FlatMacDarkLaf.setup();
         java.awt.EventQueue.invokeLater(
                 new Runnable() {
