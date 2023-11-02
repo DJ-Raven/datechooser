@@ -571,7 +571,7 @@ public class DateChooser extends JPanel {
         public ButtonDate(RDate date) {
             setEnabled(isDateSelectable(date.toDate()));
             this.date = date;
-            setMargin(new Insets(0, 0, 0, 0));
+            setBorder(BorderFactory.createEmptyBorder());
             setContentAreaFilled(false);
             addMouseListener(
                     new MouseAdapter() {
