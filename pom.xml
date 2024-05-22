@@ -6,7 +6,7 @@
 
     <groupId>com.raven</groupId>
     <artifactId>datechooser-swing</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

@@ -7,12 +7,12 @@ library used
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>3.1.1</version>
+            <version>3.4.1</version>
         </dependency>
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-extras</artifactId>
-            <version>3.1.1</version>
+            <version>3.4.1</version>
         </dependency>
     </dependencies>
 ```
@@ -24,10 +24,3 @@ FlatIntelliJLaf (Light Mode)
 FlatDarculaLaf (Dark Mode)
 
 ![2022-08-23_213658](https://user-images.githubusercontent.com/58245926/186186707-1b0b70ed-1f90-4ae3-a512-d687998c603f.png)
-
-### Update Note
-- Version `1.2`
-  - Added method `void setLightWeightPopupEnabled(boolean value)`
-- Version `1.3`
-  - Removed miglayout and make scalable component
-  - Added flatlaf properties `DateChooser.background`
