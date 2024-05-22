@@ -57,6 +57,8 @@ public class DateChooser extends JPanel {
 
     private boolean lightWeightPopupEnabled = true;
 
+    private LookAndFeel oldThemes = UIManager.getLookAndFeel();
+
     public DateChooser() {
         init();
     }
@@ -250,7 +252,12 @@ public class DateChooser extends JPanel {
                 }
             });
         }
-        SwingUtilities.updateComponentTreeUI(popup);
+
+        if (UIManager.getLookAndFeel() != oldThemes) {
+            // component in popup not update UI when change themes, so need to update when popup show
+            SwingUtilities.updateComponentTreeUI(popup);
+            oldThemes = UIManager.getLookAndFeel();
+        }
         popup.show(textField, 0, textField.getHeight());
     }
 
