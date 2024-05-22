@@ -1,8 +1,10 @@
 package com.raven.datechooser.demo;
 
-import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
+import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.raven.datechooser.DateBetween;
@@ -69,14 +71,14 @@ public class Demo extends JFrame {
             if (!FlatLaf.isLafDark()) {
                 EventQueue.invokeLater(() -> {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatMacDarkLaf.setup();
+                    FlatDarculaLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 });
             } else {
                 EventQueue.invokeLater(() -> {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatMacLightLaf.setup();
+                    FlatLightLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 });
@@ -86,18 +88,10 @@ public class Demo extends JFrame {
     }
 
     public static void main(String[] args) {
+        FlatRobotoFont.install();
         FlatLaf.registerCustomDefaultsSource("com.raven.datechooser.demo");
-        String listMonth[] = {"មករា", "កុម្ភៈ", "មីនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"};
-        String listDays[] = {"អាទិត្យ", "ច័ន្ទ", "អង្គារ", "ពុធ", "ព្រហ", "សុក្រ", "សៅរ៍"};
-        UIManager.put("DateChooser.listMonth", listMonth);
-        UIManager.put("DateChooser.listDay", listDays);
-        FlatMacDarkLaf.setup();
-        java.awt.EventQueue.invokeLater(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        new Demo().setVisible(true);
-                    }
-                });
+        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
+        FlatDarculaLaf.setup();
+        EventQueue.invokeLater(() -> new Demo().setVisible(true));
     }
 }
