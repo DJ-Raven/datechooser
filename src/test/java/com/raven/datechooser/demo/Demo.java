@@ -5,8 +5,6 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.raven.datechooser.DateBetween;
 import com.raven.datechooser.DateChooser;
 import com.raven.datechooser.DateSelectable;
@@ -15,6 +13,8 @@ import com.raven.datechooser.listener.DateChooserAdapter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class Demo extends JFrame {
@@ -32,10 +32,13 @@ public class Demo extends JFrame {
         JPanel panel = new JPanel(new FlowLayout());
         getContentPane().add(panel);
         DateChooser ch = new DateChooser();
+
+        // disable past date
         ch.setDateSelectable(new DateSelectable() {
             @Override
             public boolean isDateSelectable(Date date) {
-                return date.before(new Date());
+                LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                return !localDate.isBefore(LocalDate.now());
             }
         });
         ch.addActionDateChooserListener(
